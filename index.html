@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>역 정보 시스템</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>🚉 역 정보 시스템</h1>
+
+    <!-- 1. 역 필터 및 선택 -->
+    <section class="box">
+      <h2>역 필터 및 선택</h2>
+      <label>선택된 역:
+        <select id="stationSelect">
+          <option>부개역</option>
+          <option>송내역</option>
+        </select>
+      </label>
+      <input type="text" id="searchInput" placeholder="검색어 입력...">
+    </section>
+
+    <!-- 2. 역 특이사항 -->
+    <section class="box">
+      <h2>역 특이사항 및 정보</h2>
+      <ul id="stationNotes">
+        <li>육상 위치</li>
+        <li>보일러실 위치 정문 맞은편</li>
+        <li>출입구 방향문 있음</li>
+      </ul>
+    </section>
+
+    <!-- 3. 역 배치도 -->
+    <section class="box">
+      <h2>역 배치도</h2>
+      <input type="file" id="uploadMap" accept="image/*" />
+      <div id="mapPreview"></div>
+    </section>
+
+    <!-- 4. 최근 작업 내용 -->
+    <section class="box">
+      <h2>최근 작업 내용</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>작업일자</th>
+            <th>작업내용</th>
+            <th>작업자</th>
+            <th>상태</th>
+            <th>우선순위</th>
+          </tr>
+        </thead>
+        <tbody id="workTable">
+          <tr>
+            <td>2025. 7. 1.</td>
+            <td>소화전 점검</td>
+            <td>오오오</td>
+            <td><span class="badge">진행중</span></td>
+            <td><span class="badge urgent">긴급</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+
+</html>
+
+
+      
