@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>역 정보 시스템</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🚉 역 정보 시스템</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -13,33 +13,35 @@
     <!-- 1. 역 필터 및 선택 -->
     <section class="box">
       <h2>역 필터 및 선택</h2>
-      <label>선택된 역:
-        <select id="stationSelect">
-          <option>부개역</option>
-          <option>송내역</option>
-        </select>
-      </label>
-      <input type="text" id="searchInput" placeholder="검색어 입력...">
+      <label for="stationSelect">선택된 역:</label>
+      <select id="stationSelect">
+        <option>부개역</option>
+        <option>인천역</option>
+        <option>서울역</option>
+      </select>
+      <input type="text" placeholder="노선 필터…" />
     </section>
 
-    <!-- 2. 역 특이사항 -->
+    <!-- 2. 역 특이사항 및 정보: 아래 내용을 너가 직접 수정하면 돼 -->
     <section class="box">
       <h2>역 특이사항 및 정보</h2>
-      <ul id="stationNotes">
+      <ul>
         <li>육상 위치</li>
         <li>보일러실 위치 정문 맞은편</li>
         <li>출입구 방향문 있음</li>
+        <!-- 🔧 여기에 새로운 특이사항을 <li>로 추가하면 돼 -->
       </ul>
     </section>
 
-    <!-- 3. 역 배치도 -->
+    <!-- 3. 역 배치도: 아래 input으로 이미지 업로드할 수 있어 -->
     <section class="box">
       <h2>역 배치도</h2>
-      <input type="file" id="uploadMap" accept="image/*" />
-      <div id="mapPreview"></div>
+      <input type="file" />
+      <img src="배치도.png" alt="역 배치도 이미지" style="max-width: 100%; margin-top: 10px;" />
+      <!-- 🔧 이미지 경로 바꾸거나 새로 넣으면 자동 반영됨 -->
     </section>
 
-    <!-- 4. 최근 작업 내용 -->
+    <!-- 4. 최근 작업 내용: 직접 표 내용을 수정해서 쓸 수 있어 -->
     <section class="box">
       <h2>최근 작업 내용</h2>
       <table>
@@ -52,24 +54,19 @@
             <th>우선순위</th>
           </tr>
         </thead>
-        <tbody id="workTable">
+        <tbody>
           <tr>
             <td>2025. 7. 1.</td>
             <td>소화전 점검</td>
             <td>오오오</td>
-            <td><span class="badge">진행중</span></td>
+            <td><span class="badge in-progress">진행중</span></td>
             <td><span class="badge urgent">긴급</span></td>
           </tr>
+          <!-- 🔧 새로운 작업을 여기에 <tr>로 추가하면 돼 -->
         </tbody>
       </table>
     </section>
   </div>
-
   <script src="script.js"></script>
 </body>
-
-
 </html>
-
-
-      
