@@ -1,72 +1,76 @@
-// 역 이름 추가
-function addStation() {
-  const input = document.getElementById("stationInput");
-  const select = document.getElementById("stationSelect");
+// 역 추가
+document.getElementById("addStationBtn").addEventListener("click", function () {
+  const stationInput = document.getElementById("stationInput");
+  const stationSelect = document.getElementById("stationSelect");
 
-  if (input.value.trim() !== "") {
+  if (stationInput.value.trim() !== "") {
     const option = document.createElement("option");
-    option.text = input.value;
-    select.add(option);
-    input.value = "";
+    option.text = stationInput.value;
+    stationSelect.add(option);
+    stationInput.value = "";
   }
-}
+});
 
 // 특이사항 추가
-function addNote() {
-  const input = document.getElementById("noteInput");
-  const ul = document.getElementById("stationNotes");
+document.getElementById("addNoteBtn").addEventListener("click", function () {
+  const noteInput = document.getElementById("noteInput");
+  const stationNotes = document.getElementById("stationNotes");
 
-  if (input.value.trim() !== "") {
+  if (noteInput.value.trim() !== "") {
     const li = document.createElement("li");
-    li.textContent = input.value;
-    ul.appendChild(li);
-    input.value = "";
+    li.textContent = noteInput.value;
+    stationNotes.appendChild(li);
+    noteInput.value = "";
   }
-}
+});
 
-// 역 배치도 이미지 미리보기
-function previewImage(event) {
-  const img = document.getElementById("stationImage");
-  img.src = URL.createObjectURL(event.target.files[0]);
-  img.style.maxWidth = "100%";
-  img.style.marginTop = "10px";
-}
+// 배치도 미리보기
+document.getElementById("imageUpload").addEventListener("change", function (event) {
+  const file = event.target.files[0];
+  const preview = document.getElementById("stationImage");
+
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      preview.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+});
 
 // 작업 등록
-function addWork() {
-  const date = document.getElementById("workDate").value;
-  const content = document.getElementById("workContent").value;
+document.getElementById("addWorkBtn").addEventListener("click", function () {
+  const workDate = document.getElementById("workDate").value;
+  const workContent = document.getElementById("workContent").value;
   const worker = document.getElementById("worker").value;
   const status = document.getElementById("workStatus").value;
   const priority = document.getElementById("workPriority").value;
+  const tbody = document.querySelector("#workTable tbody");
 
-  if (!date || !content || !worker) {
-    alert("작업일자, 내용, 작업자는 필수 입력 항목입니다.");
-    return;
+  if (workDate && workContent && worker) {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${workDate}</td>
+      <td>${workContent}</td>
+      <td>${worker}</td>
+      <td>${status}</td>
+      <td>${priority}</td>
+      <td><button class="deleteBtn">삭제</button></td>
+    `;
+
+    tbody.appendChild(row);
+
+    // 삭제 이벤트
+    row.querySelector(".deleteBtn").addEventListener("click", () => {
+      row.remove();
+    });
+
+    // 입력값 초기화
+    document.getElementById("workDate").value = "";
+    document.getElementById("workContent").value = "";
+    document.getElementById("worker").value = "";
+    document.getElementById("workStatus").value = "진행중";
+    document.getElementById("workPriority").value = "긴급";
   }
-
-  const table = document.getElementById("workTable").getElementsByTagName("tbody")[0];
-  const newRow = table.insertRow();
-
-  newRow.innerHTML = `
-    <td>${date}</td>
-    <td>${content}</td>
-    <td>${worker}</td>
-    <td><span class="status ${status === '진행중' ? 'in-progress' : 'complete'}">${status}</span></td>
-    <td><span class="priority ${priority === '긴급' ? 'urgent' : 'normal'}">${priority}</span></td>
-    <td><button onclick="deleteRow(this)">삭제</button></td>
-  `;
-
-  // 입력값 초기화
-  document.getElementById("workDate").value = "";
-  document.getElementById("workContent").value = "";
-  document.getElementById("worker").value = "";
-  document.getElementById("workStatus").value = "진행중";
-  document.getElementById("workPriority").value = "긴급";
-}
-
-// 행 삭제
-function deleteRow(btn) {
-  const row = btn.parentNode.parentNode;
-  row.parentNode.removeChild(row);
-}
+});
