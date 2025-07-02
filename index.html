@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>혹 정보 시스템</title>
+  <title>역 정보 시스템</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>혹 정보 시스템</h1>
+    <h1>역 정보 시스템</h1>
 
     <!-- 1. 역 필터 및 선택 -->
     <section class="box">
-      <h2>혹 필터 및 선택</h2>
+      <h2> 필터 및 선택</h2>
       <label for="stationInput">역 이름 입력: </label>
       <input type="text" id="stationInput" placeholder="예: 인천역" />
       <button onclick="addStation()">추가</button>
@@ -21,17 +21,17 @@
 
     <!-- 2. 역 특이사항 및 정보 -->
     <section class="box">
-      <h2>혹 특이사항 및 정보</h2>
-      <textarea id="stationNotesInput" placeholder="예: 육상 위치\n누수 있음 등"></textarea>
+      <h2> 특이사항 및 정보(예: 육상 위치\n누수 있음 등)</h2>
+      <textarea id="stationNotesInput" placeholder=""></textarea>
       <button onclick="addStationNote()">추가</button>
       <ul id="stationNotes"></ul>
     </section>
 
     <!-- 3. 역 배치도 -->
     <section class="box">
-      <h2>혹 배치도 (특이사항 파악, 누수위치 등)</h2>
+      <h2> 배치도 (특이사항 파악, 누수위치 등)</h2>
       <input type="file" id="mapUpload" accept="image/*" onchange="previewImage(event)" />
-      <img id="mapImage" src="" alt="혹 배치도 이미지" style="max-width: 100%; margin-top: 10px; display: none;" />
+      <img id="mapImage" src="" alt=" 배치도 이미지" style="max-width: 100%; margin-top: 10px; display: none;" />
     </section>
 
     <!-- 4. 최근 작업 내용 -->
