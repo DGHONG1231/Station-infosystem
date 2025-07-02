@@ -5,39 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>역 정보 시스템</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
 </head>
 <body>
   <div class="container">
     <h1>🚉 역 정보 시스템</h1>
 
-    <!-- 역 추가 -->
     <section>
       <h2>• 역 필터 및 선택</h2>
-      <input type="text" id="stationInput" placeholder="역 이름 입력..." />
-      <button onclick="addStation()">추가</button>
-      <ul id="stationList"></ul>
+      <input type="text" id="stationInput" placeholder="역 이름 입력" />
+      <button id="addStationBtn">추가</button>
+      <select id="stationSelect"></select>
     </section>
 
-    <!-- 특이사항 추가 -->
     <section>
       <h2>• 역 특이사항 및 정보</h2>
       <input type="text" id="noteInput" placeholder="예: 육상 위치" />
-      <button onclick="addNote()">추가</button>
-      <ul id="noteList"></ul>
+      <button id="addNoteBtn">추가</button>
+      <ul id="stationNotes"></ul>
     </section>
 
-    <!-- 배치도 -->
     <section>
       <h2>• 역 배치도 (특이사항 파악, 누수위치 등)</h2>
-      <input type="file" id="layoutImage" accept="image/*" />
-      <br />
-      <img id="previewImage" src="" alt="역 배치도 이미지" />
+      <input type="file" accept="image/*" id="imageUpload" />
+      <img id="stationImage" alt="역 배치도 이미지" />
     </section>
 
-    <!-- 작업 테이블 -->
     <section>
       <h2>• 최근 작업 내용 (중복작업 방지용, 공구구매내역 등)</h2>
-      <table>
+      <table id="workTable">
         <thead>
           <tr>
             <th>작업일자</th>
@@ -48,30 +44,25 @@
             <th>삭제</th>
           </tr>
         </thead>
-        <tbody id="taskTableBody">
-          <!-- 작업 행이 여기에 추가됨 -->
-        </tbody>
+        <tbody></tbody>
       </table>
     </section>
 
-    <!-- 작업 등록 -->
     <section>
       <h2>• 작업 등록</h2>
-      <input type="text" id="workDate" placeholder="2025.07.02" />
-      <input type="text" id="workDesc" placeholder="작업내용" />
+      <input type="text" id="workDate" placeholder="작업일자" />
+      <input type="text" id="workContent" placeholder="작업내용" />
       <input type="text" id="worker" placeholder="작업자" />
-      <select id="status">
+      <select id="workStatus">
         <option value="진행중">진행중</option>
         <option value="완료">완료</option>
       </select>
-      <select id="priority">
+      <select id="workPriority">
         <option value="긴급">긴급</option>
         <option value="보통">보통</option>
       </select>
-      <button onclick="addTask()">추가</button>
+      <button id="addWorkBtn">추가</button>
     </section>
   </div>
-
-  <script src="script.js" defer></script>
 </body>
 </html>
