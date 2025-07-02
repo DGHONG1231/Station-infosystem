@@ -3,40 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>역 정보 시스템</title>
+  <title>• 역 정보 시스템</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>역 정보 시스템</h1>
+    <h1 class="title">🚉 역 정보 시스템
+    </h1>
 
-    <!-- 1. 역 필터 및 선택 -->
+    <!-- 역 필터 및 선택 -->
     <section class="box">
-      <h2> 필터 및 선택</h2>
-      <label for="stationInput">역 이름 입력: </label>
-      <input type="text" id="stationInput" placeholder="예: 인천역" />
+      <h2>• 역 필터 및 선택</h2>
+      <input type="text" id="stationInput" placeholder="역 이름 입력..." />
       <button onclick="addStation()">추가</button>
       <ul id="stationList"></ul>
     </section>
 
-    <!-- 2. 역 특이사항 및 정보 -->
+    <!-- 역 특이사항 및 정보 -->
     <section class="box">
-      <h2> 특이사항 및 정보(예: 육상 위치\n누수 있음 등)</h2>
-      <textarea id="stationNotesInput" placeholder=""></textarea>
-      <button onclick="addStationNote()">추가</button>
-      <ul id="stationNotes"></ul>
+      <h2>• 역 특이사항 및 정보</h2>
+      <input type="text" id="noteInput" placeholder="예: 육상 위치 등..." />
+      <button onclick="addNote()">추가</button>
+      <ul id="notesList"></ul>
     </section>
 
-    <!-- 3. 역 배치도 -->
+    <!-- 역 배치도 이미지 -->
     <section class="box">
-      <h2> 배치도 (특이사항 파악, 누수위치 등)</h2>
-      <input type="file" id="mapUpload" accept="image/*" onchange="previewImage(event)" />
-      <img id="mapImage" src="" alt=" 배치도 이미지" style="max-width: 100%; margin-top: 10px; display: none;" />
+      <h2>• 역 배치도 (특이사항 파악, 누수위치 등)</h2>
+      <input type="file" id="layoutUpload" accept="image/*" onchange="showImage(event)" />
+      <img id="layoutImage" alt="역 배치도 이미지" style="max-width: 100%; margin-top: 10px; display: none;" />
     </section>
 
-    <!-- 4. 최근 작업 내용 -->
+    <!-- 최근 작업 내용 -->
     <section class="box">
-      <h2>최근 작업 내용 (중복작업 방지용, 공구구매내역 등)</h2>
+      <h2>• 최근 작업 내용 (중복작업 방지용, 공구구매내역 등)</h2>
       <table>
         <thead>
           <tr>
@@ -45,35 +45,32 @@
             <th>작업자</th>
             <th>상태</th>
             <th>우선순위</th>
+            <th>삭제</th>
           </tr>
         </thead>
-        <tbody id="workTable">
-          <tr>
-            <td>2025. 7. 1.</td>
-            <td>소화전 점검</td>
-            <td>오오오</td>
-            <td><span class="badge yellow">진행중</span></td>
-            <td><span class="badge red">긴급</span></td>
-          </tr>
+        <tbody id="taskTableBody">
         </tbody>
       </table>
     </section>
 
-    <!-- 5. 작업 등록 폼 -->
+    <!-- 작업 등록 -->
     <section class="box">
-      <h2>작업 등록</h2>
-      <input type="text" id="workDate" placeholder="작업일자" />
-      <input type="text" id="workContent" placeholder="작업내용" />
-      <input type="text" id="worker" placeholder="작업자" />
-      <select id="status">
-        <option>진행중</option>
-        <option>완료</option>
+      <h2>• 작업 등록</h2>
+      <input type="text" id="dateInput" placeholder="작업일자" />
+      <input type="text" id="contentInput" placeholder="작업내용" />
+      <input type="text" id="workerInput" placeholder="작업자" />
+      <select id="statusInput">
+        <option value="진행중">진행중</option>
+        <option value="완료">완료</option>
       </select>
-      <select id="priority">
-        <option>긴급</option>
-        <option>보통</option>
-        <option>낮음</option>
+      <select id="priorityInput">
+        <option value="긴급">긴급</option>
+        <option value="보통">보통</option>
       </select>
-      <button onclick="addWork()">추가</button>
+      <button onclick="addTask()">추가</button>
     </section>
   </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
