@@ -14,21 +14,21 @@
     <section>
       <h2>• 역 필터 및 선택</h2>
       <input type="text" id="stationInput" placeholder="역 이름 입력" />
-      <button id="addStationBtn">추가</button>
+      <button onclick="addStation()">추가</button>
       <select id="stationSelect"></select>
-      <button id="deleteStationBtn">삭제</button>
+      <button onclick="deleteStation()">삭제</button>
     </section>
 
     <section>
       <h2>• 역 특이사항 및 정보</h2>
       <input type="text" id="noteInput" placeholder="예: 육상 위치" />
-      <button id="addNoteBtn">추가</button>
+      <button onclick="addNote()">추가</button>
       <ul id="stationNotes"></ul>
     </section>
 
     <section>
       <h2>• 역 배치도 (특이사항 파악, 누수위치 등)</h2>
-      <input type="file" id="imageUpload" accept="image/*" />
+      <input type="file" accept="image/*" onchange="previewImage(event)" />
       <img id="stationImage" alt="역 배치도 이미지" />
     </section>
 
@@ -62,7 +62,7 @@
         <option value="긴급">긴급</option>
         <option value="보통">보통</option>
       </select>
-      <button id="addWorkBtn">추가</button>
+      <button onclick="addWork()">추가</button>
     </section>
   </div>
 </body>
