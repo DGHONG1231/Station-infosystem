@@ -1,12 +1,12 @@
-// 역 추가
+// 역 이름 추가
 function addStation() {
   const input = document.getElementById("stationInput");
-  const list = document.getElementById("stationList");
+  const select = document.getElementById("stationSelect");
 
-  if (input.value.trim()) {
-    const li = document.createElement("li");
-    li.textContent = input.value;
-    list.appendChild(li);
+  if (input.value.trim() !== "") {
+    const option = document.createElement("option");
+    option.text = input.value;
+    select.add(option);
     input.value = "";
   }
 }
@@ -14,55 +14,59 @@ function addStation() {
 // 특이사항 추가
 function addNote() {
   const input = document.getElementById("noteInput");
-  const list = document.getElementById("noteList");
+  const ul = document.getElementById("stationNotes");
 
-  if (input.value.trim()) {
+  if (input.value.trim() !== "") {
     const li = document.createElement("li");
     li.textContent = input.value;
-    list.appendChild(li);
+    ul.appendChild(li);
     input.value = "";
   }
 }
 
+// 역 배치도 이미지 미리보기
+function previewImage(event) {
+  const img = document.getElementById("stationImage");
+  img.src = URL.createObjectURL(event.target.files[0]);
+  img.style.maxWidth = "100%";
+  img.style.marginTop = "10px";
+}
+
 // 작업 등록
-function addTask() {
+function addWork() {
   const date = document.getElementById("workDate").value;
-  const desc = document.getElementById("workDesc").value;
+  const content = document.getElementById("workContent").value;
   const worker = document.getElementById("worker").value;
-  const status = document.getElementById("status").value;
-  const priority = document.getElementById("priority").value;
+  const status = document.getElementById("workStatus").value;
+  const priority = document.getElementById("workPriority").value;
 
-  if (!date || !desc || !worker) return;
+  if (!date || !content || !worker) {
+    alert("작업일자, 내용, 작업자는 필수 입력 항목입니다.");
+    return;
+  }
 
-  const table = document.getElementById("taskTableBody");
-  const row = table.insertRow();
+  const table = document.getElementById("workTable").getElementsByTagName("tbody")[0];
+  const newRow = table.insertRow();
 
-  row.innerHTML = `
+  newRow.innerHTML = `
     <td>${date}</td>
-    <td>${desc}</td>
+    <td>${content}</td>
     <td>${worker}</td>
-    <td><span class="status">${status}</span></td>
-    <td><span class="priority">${priority}</span></td>
+    <td><span class="status ${status === '진행중' ? 'in-progress' : 'complete'}">${status}</span></td>
+    <td><span class="priority ${priority === '긴급' ? 'urgent' : 'normal'}">${priority}</span></td>
     <td><button onclick="deleteRow(this)">삭제</button></td>
   `;
 
-  // 초기화
+  // 입력값 초기화
   document.getElementById("workDate").value = "";
-  document.getElementById("workDesc").value = "";
+  document.getElementById("workContent").value = "";
   document.getElementById("worker").value = "";
+  document.getElementById("workStatus").value = "진행중";
+  document.getElementById("workPriority").value = "긴급";
 }
 
-// 삭제
+// 행 삭제
 function deleteRow(btn) {
   const row = btn.parentNode.parentNode;
-  row.remove();
+  row.parentNode.removeChild(row);
 }
-
-// 이미지 미리보기
-document.getElementById("layoutImage").addEventListener("change", function () {
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    document.getElementById("previewImage").src = e.target.result;
-  };
-  reader.readAsDataURL(this.files[0]);
-});
