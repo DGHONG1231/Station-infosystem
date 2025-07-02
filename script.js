@@ -1,76 +1,95 @@
-// 역 추가
-document.getElementById("addStationBtn").addEventListener("click", function () {
-  const stationInput = document.getElementById("stationInput");
-  const stationSelect = document.getElementById("stationSelect");
+let stationData = {};
 
-  if (stationInput.value.trim() !== "") {
-    const option = document.createElement("option");
-    option.text = stationInput.value;
-    stationSelect.add(option);
-    stationInput.value = "";
-  }
-});
-
-// 특이사항 추가
-document.getElementById("addNoteBtn").addEventListener("click", function () {
-  const noteInput = document.getElementById("noteInput");
-  const stationNotes = document.getElementById("stationNotes");
-
-  if (noteInput.value.trim() !== "") {
-    const li = document.createElement("li");
-    li.textContent = noteInput.value;
-    stationNotes.appendChild(li);
-    noteInput.value = "";
-  }
-});
-
-// 배치도 미리보기
-document.getElementById("imageUpload").addEventListener("change", function (event) {
-  const file = event.target.files[0];
-  const preview = document.getElementById("stationImage");
-
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      preview.src = e.target.result;
+function addStation() {
+  const name = document.getElementById("stationInput").value.trim();
+  if (!name) return;
+  if (!stationData[name]) {
+    stationData[name] = {
+      notes: [],
+      works: [],
+      image: ""
     };
-    reader.readAsDataURL(file);
+    const option = document.createElement("option");
+    option.value = name;
+    option.textContent = name;
+    document.getElementById("stationSelect").appendChild(option);
   }
-});
+  document.getElementById("stationInput").value = "";
+  document.getElementById("stationSelect").value = name;
+  loadStationData(name);
+}
 
-// 작업 등록
-document.getElementById("addWorkBtn").addEventListener("click", function () {
-  const workDate = document.getElementById("workDate").value;
-  const workContent = document.getElementById("workContent").value;
+function loadStationData(name) {
+  // 특이사항
+  const noteList = document.getElementById("stationNotes");
+  noteList.innerHTML = "";
+  stationData[name]?.notes.forEach(note => {
+    const li = document.createElement("li");
+    li.textContent = note;
+    noteList.appendChild(li);
+  });
+
+  // 작업 내용
+  const tbody = document.querySelector("#workTable tbody");
+  tbody.innerHTML = "";
+  stationData[name]?.works.forEach((work, index) => {
+    const row = tbody.insertRow();
+    Object.values(work).forEach(text => {
+      const cell = row.insertCell();
+      cell.textContent = text;
+    });
+    const del = row.insertCell();
+    const btn = document.createElement("button");
+    btn.textContent = "삭제";
+    btn.onclick = () => {
+      stationData[name].works.splice(index, 1);
+      loadStationData(name);
+    };
+    del.appendChild(btn);
+  });
+
+  // 이미지
+  const img = document.getElementById("stationImage");
+  img.src = stationData[name]?.image || "";
+}
+
+function addNote() {
+  const name = document.getElementById("stationSelect").value;
+  const note = document.getElementById("noteInput").value.trim();
+  if (!name || !note) return;
+  stationData[name].notes.push(note);
+  document.getElementById("noteInput").value = "";
+  loadStationData(name);
+}
+
+function addWork() {
+  const name = document.getElementById("stationSelect").value;
+  const date = document.getElementById("workDate").value;
+  const content = document.getElementById("workContent").value;
   const worker = document.getElementById("worker").value;
   const status = document.getElementById("workStatus").value;
   const priority = document.getElementById("workPriority").value;
-  const tbody = document.querySelector("#workTable tbody");
+  if (!name || !date || !content || !worker) return;
+  stationData[name].works.push({ date, content, worker, status, priority });
+  document.getElementById("workDate").value = "";
+  document.getElementById("workContent").value = "";
+  document.getElementById("worker").value = "";
+  loadStationData(name);
+}
 
-  if (workDate && workContent && worker) {
-    const row = document.createElement("tr");
+function previewImage(event) {
+  const name = document.getElementById("stationSelect").value;
+  const reader = new FileReader();
+  reader.onload = function () {
+    const img = document.getElementById("stationImage");
+    img.src = reader.result;
+    if (name) {
+      stationData[name].image = reader.result;
+    }
+  };
+  reader.readAsDataURL(event.target.files[0]);
+}
 
-    row.innerHTML = `
-      <td>${workDate}</td>
-      <td>${workContent}</td>
-      <td>${worker}</td>
-      <td>${status}</td>
-      <td>${priority}</td>
-      <td><button class="deleteBtn">삭제</button></td>
-    `;
-
-    tbody.appendChild(row);
-
-    // 삭제 이벤트
-    row.querySelector(".deleteBtn").addEventListener("click", () => {
-      row.remove();
-    });
-
-    // 입력값 초기화
-    document.getElementById("workDate").value = "";
-    document.getElementById("workContent").value = "";
-    document.getElementById("worker").value = "";
-    document.getElementById("workStatus").value = "진행중";
-    document.getElementById("workPriority").value = "긴급";
-  }
+document.getElementById("stationSelect").addEventListener("change", (e) => {
+  loadStationData(e.target.value);
 });
