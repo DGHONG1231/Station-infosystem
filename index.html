@@ -3,100 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>▶️ 역 정보 시스템</title>
+  <title>혹 정보 시스템</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    body {
-      font-family: "Pretendard", sans-serif;
-      background: #f9fafb;
-      margin: 0;
-      padding: 20px;
-    }
-    h1, h2 {
-      text-align: center;
-    }
-    .container {
-      max-width: 900px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    }
-    .box {
-      background: #f4f4f4;
-      margin: 20px 0;
-      padding: 20px;
-      border-radius: 8px;
-    }
-    label, input, select, button {
-      display: block;
-      margin-top: 10px;
-      width: 100%;
-      font-size: 1em;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 10px;
-      text-align: center;
-    }
-    .status {
-      background: gold;
-      padding: 4px 8px;
-      border-radius: 6px;
-    }
-    .priority {
-      background: red;
-      color: #fff;
-      padding: 4px 8px;
-      border-radius: 6px;
-    }
-    .gear {
-      float: right;
-      cursor: pointer;
-    }
-  </style>
 </head>
 <body>
   <div class="container">
-    <h1>🚉 역 정보 시스템 <span class="gear" onclick="toggleForm()">⚙️</span></h1>
+    <h1>혹 정보 시스템</h1>
 
-    <!-- 역 선택 -->
-    <div class="box">
-      <h2>역 필터 및 선택</h2>
-      <label>선택된 역:</label>
-      <select>
-        <option>인천역</option>
-        <option>부개역</option>
-      </select>
-      <input type="text" placeholder="노선 필터..." />
-    </div>
+    <!-- 1. 역 필터 및 선택 -->
+    <section class="box">
+      <h2>혹 필터 및 선택</h2>
+      <label for="stationInput">역 이름 입력: </label>
+      <input type="text" id="stationInput" placeholder="예: 인천역" />
+      <button onclick="addStation()">추가</button>
+      <ul id="stationList"></ul>
+    </section>
 
-    <!-- 역 특이사항 -->
-    <div class="box">
-      <h2>역 특이사항 및 정보</h2>
-      <ul>
-        <li>육상 위치</li>
-        <li>보일러실 위치 정문 맞은편</li>
-        <li>출입구 방향문 있음</li>
-      </ul>
-    </div>
+    <!-- 2. 역 특이사항 및 정보 -->
+    <section class="box">
+      <h2>혹 특이사항 및 정보</h2>
+      <textarea id="stationNotesInput" placeholder="예: 육상 위치\n누수 있음 등"></textarea>
+      <button onclick="addStationNote()">추가</button>
+      <ul id="stationNotes"></ul>
+    </section>
 
-    <!-- 배치도 -->
-    <div class="box">
-      <h2>역 배치도</h2>
-      <input type="file" />
-      <img src="#" alt="역 배치도 이미지" style="max-width: 100%; margin-top: 10px;" />
-    </div>
+    <!-- 3. 역 배치도 -->
+    <section class="box">
+      <h2>혹 배치도 (특이사항 파악, 누수위치 등)</h2>
+      <input type="file" id="mapUpload" accept="image/*" onchange="previewImage(event)" />
+      <img id="mapImage" src="" alt="혹 배치도 이미지" style="max-width: 100%; margin-top: 10px; display: none;" />
+    </section>
 
-    <!-- 최근 작업 내역 -->
-    <div class="box">
-      <h2>최근 작업 내용</h2>
+    <!-- 4. 최근 작업 내용 -->
+    <section class="box">
+      <h2>최근 작업 내용 (중복작업 방지용, 공구구매내역 등)</h2>
       <table>
         <thead>
           <tr>
@@ -107,23 +47,23 @@
             <th>우선순위</th>
           </tr>
         </thead>
-        <tbody id="logTable">
+        <tbody id="workTable">
           <tr>
             <td>2025. 7. 1.</td>
             <td>소화전 점검</td>
             <td>오오오</td>
-            <td><span class="status">진행중</span></td>
-            <td><span class="priority">긴급</span></td>
+            <td><span class="badge yellow">진행중</span></td>
+            <td><span class="badge red">긴급</span></td>
           </tr>
         </tbody>
       </table>
-    </div>
+    </section>
 
-    <!-- 새 작업 추가 폼 (숨김처리) -->
-    <div class="box" id="formBox" style="display: none;">
+    <!-- 5. 작업 등록 폼 -->
+    <section class="box">
       <h2>작업 등록</h2>
-      <input type="text" id="date" placeholder="작업일자" />
-      <input type="text" id="desc" placeholder="작업내용" />
+      <input type="text" id="workDate" placeholder="작업일자" />
+      <input type="text" id="workContent" placeholder="작업내용" />
       <input type="text" id="worker" placeholder="작업자" />
       <select id="status">
         <option>진행중</option>
@@ -132,43 +72,65 @@
       <select id="priority">
         <option>긴급</option>
         <option>보통</option>
+        <option>낮음</option>
       </select>
-      <button onclick="addLog()">추가</button>
-    </div>
+      <button onclick="addWork()">추가</button>
+    </section>
   </div>
 
   <script>
-    function toggleForm() {
-      const form = document.getElementById("formBox");
-      form.style.display = form.style.display === "none" ? "block" : "none";
+    function addStation() {
+      const input = document.getElementById('stationInput');
+      const list = document.getElementById('stationList');
+      if (input.value.trim()) {
+        const li = document.createElement('li');
+        li.textContent = input.value;
+        list.appendChild(li);
+        input.value = '';
+      }
     }
 
-    function addLog() {
-      const date = document.getElementById("date").value;
-      const desc = document.getElementById("desc").value;
-      const worker = document.getElementById("worker").value;
-      const status = document.getElementById("status").value;
-      const priority = document.getElementById("priority").value;
+    function addStationNote() {
+      const input = document.getElementById('stationNotesInput');
+      const list = document.getElementById('stationNotes');
+      if (input.value.trim()) {
+        const li = document.createElement('li');
+        li.textContent = input.value;
+        list.appendChild(li);
+        input.value = '';
+      }
+    }
 
-      const table = document.getElementById("logTable");
-      const row = document.createElement("tr");
+    function previewImage(event) {
+      const image = document.getElementById('mapImage');
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          image.src = reader.result;
+          image.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    }
 
+    function addWork() {
+      const date = document.getElementById('workDate').value;
+      const content = document.getElementById('workContent').value;
+      const worker = document.getElementById('worker').value;
+      const status = document.getElementById('status').value;
+      const priority = document.getElementById('priority').value;
+      const table = document.getElementById('workTable');
+
+      const row = table.insertRow();
       row.innerHTML = `
         <td>${date}</td>
-        <td>${desc}</td>
+        <td>${content}</td>
         <td>${worker}</td>
-        <td><span class="status">${status}</span></td>
-        <td><span class="priority">${priority}</span></td>
+        <td><span class="badge yellow">${status}</span></td>
+        <td><span class="badge red">${priority}</span></td>
       `;
-
-      table.appendChild(row);
-
-      // Clear form
-      document.getElementById("date").value = "";
-      document.getElementById("desc").value = "";
-      document.getElementById("worker").value = "";
     }
   </script>
 </body>
 </html>
-
