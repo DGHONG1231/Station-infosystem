@@ -1,115 +1,139 @@
-let stations = {};
+let stations = JSON.parse(localStorage.getItem("stations")) || {};
 let currentStation = "";
 
-function addStation() {
-  const stationInput = document.getElementById("stationInput");
-  const stationName = stationInput.value.trim();
-  if (!stationName || stations[stationName]) return;
-  stations[stationName] = { notes: [], image: "", works: [] };
-  currentStation = stationName;
-
-  const option = document.createElement("option");
-  option.value = stationName;
-  option.text = stationName;
-  document.getElementById("stationSelect").appendChild(option);
-  document.getElementById("stationSelect").value = stationName;
-  updateUI();
-  stationInput.value = "";
+function saveData() {
+  localStorage.setItem("stations", JSON.stringify(stations));
 }
 
-function deleteStation() {
-  const stationSelect = document.getElementById("stationSelect");
-  const selected = stationSelect.value;
-  if (selected && stations[selected]) {
-    delete stations[selected];
-    stationSelect.remove(stationSelect.selectedIndex);
-    currentStation = stationSelect.value || "";
+function loadData() {
+  const select = document.getElementById("stationSelect");
+  select.innerHTML = "";
+
+  for (let station in stations) {
+    const option = document.createElement("option");
+    option.text = station;
+    option.value = station;
+    select.appendChild(option);
+  }
+
+  if (select.options.length > 0) {
+    currentStation = select.value;
     updateUI();
   }
 }
 
-function updateUI() {
-  const station = document.getElementById("stationSelect").value;
-  currentStation = station;
+function addStation() {
+  const input = document.getElementById("stationInput");
+  const name = input.value.trim();
+  if (name && !stations[name]) {
+    stations[name] = { notes: [], image: "", works: [] };
+    saveData();
+    loadData();
+  }
+  input.value = "";
+}
 
-  // 특이사항
+function deleteStation() {
+  const select = document.getElementById("stationSelect");
+  const name = select.value;
+  if (name && confirm(`정말 ${name} 역을 삭제할까요?`)) {
+    delete stations[name];
+    saveData();
+    loadData();
+  }
+}
+
+function updateUI() {
+  const select = document.getElementById("stationSelect");
+  currentStation = select.value;
+  const station = stations[currentStation];
+
+  // 특이사항 목록
   const noteList = document.getElementById("stationNotes");
   noteList.innerHTML = "";
-  if (station && stations[station]) {
-    stations[station].notes.forEach((note, index) => {
-      const li = document.createElement("li");
-      li.textContent = note;
-      const xBtn = document.createElement("button");
-      xBtn.textContent = "❌";
-      xBtn.style.marginLeft = "10px";
-      xBtn.onclick = () => {
-        stations[station].notes.splice(index, 1);
-        updateUI();
-      };
-      li.appendChild(xBtn);
-      noteList.appendChild(li);
+  station.notes.forEach((note, i) => {
+    const li = document.createElement("li");
+    li.textContent = note + " ";
+    const btn = document.createElement("button");
+    btn.textContent = "❌";
+    btn.onclick = () => {
+      station.notes.splice(i, 1);
+      saveData();
+      updateUI();
+    };
+    li.appendChild(btn);
+    noteList.appendChild(li);
+  });
+
+  // 이미지
+  const img = document.getElementById("stationImage");
+  img.src = station.image || "";
+  img.style.maxWidth = "500px";
+
+  // 작업 테이블
+  const tbody = document.querySelector("#workTable tbody");
+  tbody.innerHTML = "";
+  station.works.forEach((work, i) => {
+    const tr = document.createElement("tr");
+    ["date", "content", "worker", "status", "priority"].forEach((key) => {
+      const td = document.createElement("td");
+      td.textContent = work[key];
+      tr.appendChild(td);
     });
 
-    // 이미지
-    const image = document.getElementById("stationImage");
-    image.src = stations[station].image || "";
-
-    // 작업 테이블
-    const tbody = document.querySelector("#workTable tbody");
-    tbody.innerHTML = "";
-    stations[station].works.forEach((work, i) => {
-      const row = tbody.insertRow();
-      row.innerHTML = `
-        <td>${work.date}</td>
-        <td>${work.content}</td>
-        <td>${work.worker}</td>
-        <td>${work.status}</td>
-        <td>${work.priority}</td>
-        <td><button onclick="deleteWork(${i})">❌</button></td>
-      `;
-    });
-  }
+    const delTd = document.createElement("td");
+    const btn = document.createElement("button");
+    btn.textContent = "❌";
+    btn.onclick = () => {
+      station.works.splice(i, 1);
+      saveData();
+      updateUI();
+    };
+    delTd.appendChild(btn);
+    tr.appendChild(delTd);
+    tbody.appendChild(tr);
+  });
 }
 
 function addNote() {
   const input = document.getElementById("noteInput");
   const note = input.value.trim();
-  if (!note || !currentStation) return;
-  stations[currentStation].notes.push(note);
+  if (note && currentStation) {
+    stations[currentStation].notes.push(note);
+    saveData();
+    updateUI();
+  }
   input.value = "";
-  updateUI();
 }
 
 function previewImage(event) {
-  const file = event.target.files[0];
-  if (file && currentStation) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    if (currentStation) {
       stations[currentStation].image = e.target.result;
+      saveData();
       updateUI();
-    };
-    reader.readAsDataURL(file);
-  }
+    }
+  };
+  reader.readAsDataURL(event.target.files[0]);
 }
 
 function addWork() {
-  const date = document.getElementById("workDate").value.trim();
-  const content = document.getElementById("workContent").value.trim();
-  const worker = document.getElementById("worker").value.trim();
+  const date = document.getElementById("workDate").value;
+  const content = document.getElementById("workContent").value;
+  const worker = document.getElementById("worker").value;
   const status = document.getElementById("workStatus").value;
   const priority = document.getElementById("workPriority").value;
-  if (!date || !content || !worker || !currentStation) return;
 
-  stations[currentStation].works.push({ date, content, worker, status, priority });
-  document.getElementById("workDate").value = "";
-  document.getElementById("workContent").value = "";
-  document.getElementById("worker").value = "";
-  updateUI();
-}
-
-function deleteWork(index) {
-  if (currentStation && stations[currentStation]) {
-    stations[currentStation].works.splice(index, 1);
+  if (date && content && worker && currentStation) {
+    stations[currentStation].works.push({ date, content, worker, status, priority });
+    saveData();
     updateUI();
+
+    document.getElementById("workDate").value = "";
+    document.getElementById("workContent").value = "";
+    document.getElementById("worker").value = "";
   }
 }
+
+window.onload = loadData;
