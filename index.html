@@ -15,13 +15,13 @@
       <h2>• 역 필터 및 선택</h2>
       <input type="text" id="stationInput" placeholder="역 이름 입력" />
       <button onclick="addStation()">추가</button>
-      <select id="stationSelect"></select>
+      <select id="stationSelect" onchange="updateUI()"></select>
       <button onclick="deleteStation()">삭제</button>
     </section>
 
     <section>
       <h2>• 역 특이사항 및 정보</h2>
-      <input type="text" id="noteInput" placeholder="예: 옥상 위치, 역무실 비번, 출입구 위치" />
+      <input type="text" id="noteInput" placeholder="예: 옥상 위치, 역무실 비번, 출입문 위치 등" />
       <button onclick="addNote()">추가</button>
       <ul id="stationNotes"></ul>
     </section>
