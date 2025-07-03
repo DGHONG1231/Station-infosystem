@@ -4,15 +4,103 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>역 정보 시스템</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="script.js" defer></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9fafb;
+      color: #333;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      font-size: 28px;
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin-top: 30px;
+      margin-bottom: 10px;
+      color: #34495e;
+      font-weight: 600;
+      border-left: 4px solid #3498db;
+      padding-left: 10px;
+    }
+
+    input[type="text"],
+    select,
+    button {
+      padding: 8px 10px;
+      font-size: 14px;
+      margin: 5px 5px 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    ul li button {
+      background-color: #e74c3c;
+      margin-left: 10px;
+    }
+
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    ul li {
+      margin-bottom: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    table th,
+    table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+
+    img {
+      max-width: 100%;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <h1>🚉 역 정보 시스템</h1>
 
     <section>
-      <h2>• 역 필터 및 선택</h2>
+      <h2>역 필터 및 선택</h2>
       <input type="text" id="stationInput" placeholder="역 이름 입력" />
       <button onclick="addStation()">추가</button>
       <select id="stationSelect" onchange="updateUI()"></select>
@@ -20,20 +108,20 @@
     </section>
 
     <section>
-      <h2>• 역 특이사항 및 정보(옥상 위치, 역무실 비번, 출입문 위치 등)</h2>
-      <input type="text" id="noteInput"/>
+      <h2>역 특이사항 및 정보(옥상 위치, 역무실 비번, 출입문 위치 등)</h2>
+      <input type="text" id="noteInput" />
       <button onclick="addNote()">추가</button>
       <ul id="stationNotes"></ul>
     </section>
 
     <section>
-      <h2>• 역 배치도 (특이사항 파악, 누수위치 등)</h2>
+      <h2>역 배치도 (특이사항 파악, 누수위치 등)</h2>
       <input type="file" accept="image/*" onchange="previewImage(event)" />
       <img id="stationImage" alt="역 배치도 이미지" />
     </section>
 
     <section>
-      <h2>• 최근 작업 내용 (중복작업 방지용, 공구구매내역 등)</h2>
+      <h2>최근 작업 내용 (중복작업 방지용, 공구구매내역 등)</h2>
       <table id="workTable">
         <thead>
           <tr>
@@ -50,7 +138,7 @@
     </section>
 
     <section>
-      <h2>• 작업 등록</h2>
+      <h2>작업 등록</h2>
       <input type="text" id="workDate" placeholder="작업일자" />
       <input type="text" id="workContent" placeholder="작업내용" />
       <input type="text" id="worker" placeholder="작업자" />
@@ -65,5 +153,144 @@
       <button onclick="addWork()">추가</button>
     </section>
   </div>
+
+  <script>
+    let stationData = JSON.parse(localStorage.getItem("stationData")) || {};
+
+    function saveData() {
+      localStorage.setItem("stationData", JSON.stringify(stationData));
+    }
+
+    function updateStationSelect() {
+      const select = document.getElementById("stationSelect");
+      select.innerHTML = "";
+      Object.keys(stationData).forEach(station => {
+        const option = document.createElement("option");
+        option.value = station;
+        option.textContent = station;
+        select.appendChild(option);
+      });
+    }
+
+    function updateUI() {
+      const station = document.getElementById("stationSelect").value;
+      const notes = stationData[station]?.notes || [];
+      const image = stationData[station]?.image || "";
+      const works = stationData[station]?.works || [];
+
+      const noteList = document.getElementById("stationNotes");
+      noteList.innerHTML = "";
+      notes.forEach((note, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `${note} <button onclick="deleteNote(${index})">❌</button>`;
+        noteList.appendChild(li);
+      });
+
+      const img = document.getElementById("stationImage");
+      img.src = image;
+
+      const tbody = document.querySelector("#workTable tbody");
+      tbody.innerHTML = "";
+      works.forEach((work, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${work.date}</td>
+          <td>${work.content}</td>
+          <td>${work.worker}</td>
+          <td>${work.status}</td>
+          <td>${work.priority}</td>
+          <td><button onclick="deleteWork(${index})">❌</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function addStation() {
+      const input = document.getElementById("stationInput");
+      const name = input.value.trim();
+      if (name && !stationData[name]) {
+        stationData[name] = { notes: [], image: "", works: [] };
+        saveData();
+        updateStationSelect();
+        document.getElementById("stationSelect").value = name;
+        updateUI();
+      }
+      input.value = "";
+    }
+
+    function deleteStation() {
+      const select = document.getElementById("stationSelect");
+      const name = select.value;
+      if (name && confirm(`"${name}" 역 정보를 삭제할까요?`)) {
+        delete stationData[name];
+        saveData();
+        updateStationSelect();
+        updateUI();
+      }
+    }
+
+    function addNote() {
+      const input = document.getElementById("noteInput");
+      const note = input.value.trim();
+      const station = document.getElementById("stationSelect").value;
+      if (station && note) {
+        stationData[station].notes.push(note);
+        saveData();
+        updateUI();
+        input.value = "";
+      }
+    }
+
+    function deleteNote(index) {
+      const station = document.getElementById("stationSelect").value;
+      stationData[station].notes.splice(index, 1);
+      saveData();
+      updateUI();
+    }
+
+    function previewImage(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const station = document.getElementById("stationSelect").value;
+          stationData[station].image = e.target.result;
+          saveData();
+          updateUI();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function addWork() {
+      const date = document.getElementById("workDate").value.trim();
+      const content = document.getElementById("workContent").value.trim();
+      const worker = document.getElementById("worker").value.trim();
+      const status = document.getElementById("workStatus").value;
+      const priority = document.getElementById("workPriority").value;
+      const station = document.getElementById("stationSelect").value;
+
+      if (station && date && content && worker) {
+        stationData[station].works.push({ date, content, worker, status, priority });
+        saveData();
+        updateUI();
+        document.getElementById("workDate").value = "";
+        document.getElementById("workContent").value = "";
+        document.getElementById("worker").value = "";
+      }
+    }
+
+    function deleteWork(index) {
+      const station = document.getElementById("stationSelect").value;
+      stationData[station].works.splice(index, 1);
+      saveData();
+      updateUI();
+    }
+
+    window.onload = () => {
+      updateStationSelect();
+      updateUI();
+    };
+  </script>
 </body>
 </html>
